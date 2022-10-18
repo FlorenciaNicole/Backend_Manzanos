@@ -1,4 +1,4 @@
-[
+const productos = [
     {
         id: 1,
         title: 'NINA EDT REFILLABLE 80 ML',
@@ -30,27 +30,4 @@
 
     },
 
-    {
-        id: 5,
-        title:'',
-        price:
-        thumbnail:''
-
-    },
-
-    {
-        id: 6
-        title:'',
-        price:
-        thumbnail:''
-
-    },
-
-    {
-        id: 7,
-        title:'',
-        price:
-        thumbnail:''
-
-    }
 ]
