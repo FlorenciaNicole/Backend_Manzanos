@@ -62,3 +62,24 @@ console.log(cont1.deleteAll());
 
 console.log(cont1.deleteById(1));
 
+async function test () {
+    const contenedor = new contenedorArchivo('./productos.txt')
+
+    await contenedorArchivo.save({
+        id: 1,
+        title: 'NINA EDT REFILLABLE 80 ML',
+        price: 18500,
+        thumbnail: 'https://juleriaque.vteximg.com.br/arquivos/ids/189383-1000-1000/nina-edt-refillable-5A85B04C7A019CAD64D74A41E9E7AE69.jpg?v=637992869449470000',
+    })
+    
+    await contenedorArchivo.save({
+        id: 2,
+        title:'NINA RICCI extra rouge edp for woman 30 ML',
+        price: 12200,
+        thumbnail:'https://farmaonline.vteximg.com.br/arquivos/ids/379625-0-0/8118035_0.jpg?v=637981710445700000'
+    })
+
+    console.log(await contenedor.getAll());
+}
+
+test()
