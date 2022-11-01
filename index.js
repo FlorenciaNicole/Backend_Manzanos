@@ -1,12 +1,15 @@
-class Contenedor {
-    productos = []
+const fs = require ('fs')
+const { randomUUID } = require ('crypto')
 
-    constructor(productos) {
-        this.productos.push(productos)
+class Contenedor {
+    #productos
+
+    constructor() {
+        this.#productos = []
     }
 
     save(productos){
-        this.productos.push(productos)
+        this.#productos.push(productos)
         return 'Agregaste un producto'
     }
 
@@ -20,7 +23,7 @@ class Contenedor {
     }
 
     getAll(){
-        return this.productos
+        return this.#productos
     }
 
     deleteById(id){
@@ -40,46 +43,76 @@ class Contenedor {
     }
 }
 
-const cont1 =new Contenedor({
-    id: 1,
-    title: 'NINA EDT REFILLABLE 80 ML',
-    price: 18500,
-    thumbnail: 'https://juleriaque.vteximg.com.br/arquivos/ids/189383-1000-1000/nina-edt-refillable-5A85B04C7A019CAD64D74A41E9E7AE69.jpg?v=637992869449470000',
-})
+class ContenedorArchivo {
+    #productos
+    #ruta
 
-console.log(cont1.save({
-    id: 2,
-    title:'NINA RICCI extra rouge edp for woman 30 ML',
-    price: 12200,
-    thumbnail:'https://farmaonline.vteximg.com.br/arquivos/ids/379625-0-0/8118035_0.jpg?v=637981710445700000'
-}));
+    constructor(ruta) {
+        this.#ruta = ruta
+        this.#productos = []
+    }
 
-console.log(cont1.getAll());
+    async save(productos) {
+        this.#productos.push(productos)
+        await fs.promises.writeFile(this.#ruta, JSON.stringify(this.#productos))
+    }
 
-console.log(cont1.getById(1));
+    async getAll() {
+        this.#productos = JSON.parse(await fs.promises.readFile(this.#ruta,'utf-8'))
+        return this.#productos
+    }
+}
 
-console.log(cont1.deleteAll());
+function test() {
+    const contenedor =new Contenedor()
 
-console.log(cont1.deleteById(1));
-
-async function test () {
-    const contenedor = new contenedorArchivo('./productos.txt')
-
-    await contenedorArchivo.save({
+    contenedor.save({
         id: 1,
         title: 'NINA EDT REFILLABLE 80 ML',
         price: 18500,
         thumbnail: 'https://juleriaque.vteximg.com.br/arquivos/ids/189383-1000-1000/nina-edt-refillable-5A85B04C7A019CAD64D74A41E9E7AE69.jpg?v=637992869449470000',
     })
-    
-    await contenedorArchivo.save({
+
+    contenedor.save({
         id: 2,
         title:'NINA RICCI extra rouge edp for woman 30 ML',
         price: 12200,
-        thumbnail:'https://farmaonline.vteximg.com.br/arquivos/ids/379625-0-0/8118035_0.jpg?v=637981710445700000'
+        thumbnail:'https://farmaonline.vteximg.com.br/arquivos/ids/379625-0-0/8118035_0.jpg?v=637981710445700000',
     })
 
-    console.log(await contenedor.getAll());
+    contenedor.save({
+        id: 3,
+        title:'NINA ROSE EDT 80 ML',
+        price: 18500,
+        thumbnail:'https://juleriaque.vteximg.com.br/arquivos/ids/189643-1000-1000/nina-fleur-edt-DBF829F822DB83547642EA508567D7BB.jpg?v=637999781230300000',
+    })
+
+    contenedor.save({
+        id: 4,
+        title:'NINA RICCIL AIR DU TEMPS EDT',
+        price: 17700,
+        thumbnail:'https://juleriaque.vteximg.com.br/arquivos/ids/179505-1000-1000/ninaricci-ldt-5.jpg?v=637710269758670000',
+    })
+
+    console.log(contenedor.getAll())
+
+}
+
+async function test2() {
+    const rutaArchivo = './productos.txt'
+    await fs.promises.writeFile(rutaArchivo, '[]')
+    const contenedor = new ContenedorArchivo(rutaArchivo)
+
+    await contenedor.save ({
+        id: 4,
+        title:'NINA RICCIL AIR DU TEMPS EDT',
+        price: 17700,
+        thumbnail:'https://juleriaque.vteximg.com.br/arquivos/ids/179505-1000-1000/ninaricci-ldt-5.jpg?v=637710269758670000',
+    })
+
+    console.log(await contenedor.getAll())
+
 }
 
 test()
+test2()
