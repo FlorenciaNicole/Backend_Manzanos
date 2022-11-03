@@ -1,51 +1,54 @@
-const fs = require ('fs')
-const { randomUUID } = require ('crypto')
+const { conectar } = require('./servidor.js');
+const {
+    randomUUID
+} = require('crypto')
 
 class Contenedor {
+    #ruta
     #productos
 
     constructor() {
         this.#productos = []
     }
 
-    save(productos){
+    save(productos) {
         this.#productos.push(productos)
         return 'Agregaste un producto'
     }
 
-    getById(id){
+    getById(id) {
         let a = this.productos.find(el => el.id === id)
-        if(a){
+        if (a) {
             return 'El producto ' + a.id + 'es ' + a.title
-        }else{
+        } else {
             return 'Producto no encontrado'
         }
     }
 
-    getAll(){
+    getAll() {
         return this.#productos
     }
 
-    deleteById(id){
+    deleteById(id) {
         let a = this.productos.find(el => el.id === id)
-        if(a){
-            const filterProductos = this.productos.filter((el)=> el.id !==id)
+        if (a) {
+            const filterProductos = this.productos.filter((el) => el.id !== id)
             this.productos = filterProductos
-            return 'Producto' + a.id + '('+a.title+') eliminado'
-        }else{
+            return 'Producto' + a.id + '(' + a.title + ') eliminado'
+        } else {
             return 'Producto no encontrado'
         }
-        }
-        
-    deleteAll(){
+    }
+
+    deleteAll() {
         this.productos = []
         return 'Productos eliminados'
     }
 }
 
 class ContenedorArchivo {
-    #productos
     #ruta
+    #productos
 
     constructor(ruta) {
         this.#ruta = ruta
@@ -54,17 +57,17 @@ class ContenedorArchivo {
 
     async save(productos) {
         this.#productos.push(productos)
-        await fs.promises.writeFile(this.#ruta, JSON.stringify(this.#productos))
+        await express.promises.writeFile(this.#ruta, JSON.stringify(this.#productos))
     }
 
     async getAll() {
-        this.#productos = JSON.parse(await fs.promises.readFile(this.#ruta,'utf-8'))
+        this.#productos = JSON.parse(await express.promises.readFile(this.#ruta, 'utf-8'))
         return this.#productos
     }
 }
 
 function test() {
-    const contenedor =new Contenedor()
+    const contenedor = new Contenedor()
 
     contenedor.save({
         id: 1,
@@ -75,23 +78,23 @@ function test() {
 
     contenedor.save({
         id: 2,
-        title:'NINA RICCI extra rouge edp for woman 30 ML',
+        title: 'NINA RICCI extra rouge edp for woman 30 ML',
         price: 12200,
-        thumbnail:'https://farmaonline.vteximg.com.br/arquivos/ids/379625-0-0/8118035_0.jpg?v=637981710445700000',
+        thumbnail: 'https://farmaonline.vteximg.com.br/arquivos/ids/379625-0-0/8118035_0.jpg?v=637981710445700000',
     })
 
     contenedor.save({
         id: 3,
-        title:'NINA ROSE EDT 80 ML',
+        title: 'NINA ROSE EDT 80 ML',
         price: 18500,
-        thumbnail:'https://juleriaque.vteximg.com.br/arquivos/ids/189643-1000-1000/nina-fleur-edt-DBF829F822DB83547642EA508567D7BB.jpg?v=637999781230300000',
+        thumbnail: 'https://juleriaque.vteximg.com.br/arquivos/ids/189643-1000-1000/nina-fleur-edt-DBF829F822DB83547642EA508567D7BB.jpg?v=637999781230300000',
     })
 
     contenedor.save({
         id: 4,
-        title:'NINA RICCIL AIR DU TEMPS EDT',
+        title: 'NINA RICCIL AIR DU TEMPS EDT',
         price: 17700,
-        thumbnail:'https://juleriaque.vteximg.com.br/arquivos/ids/179505-1000-1000/ninaricci-ldt-5.jpg?v=637710269758670000',
+        thumbnail: 'https://juleriaque.vteximg.com.br/arquivos/ids/179505-1000-1000/ninaricci-ldt-5.jpg?v=637710269758670000',
     })
 
     console.log(contenedor.getAll())
@@ -100,14 +103,14 @@ function test() {
 
 async function test2() {
     const rutaArchivo = './productos.txt'
-    await fs.promises.writeFile(rutaArchivo, '[]')
+    await express.promises.writeFile(rutaArchivo, '[]')
     const contenedor = new ContenedorArchivo(rutaArchivo)
 
-    await contenedor.save ({
+    await contenedor.save({
         id: 4,
-        title:'NINA RICCIL AIR DU TEMPS EDT',
+        title: 'NINA RICCIL AIR DU TEMPS EDT',
         price: 17700,
-        thumbnail:'https://juleriaque.vteximg.com.br/arquivos/ids/179505-1000-1000/ninaricci-ldt-5.jpg?v=637710269758670000',
+        thumbnail: 'https://juleriaque.vteximg.com.br/arquivos/ids/179505-1000-1000/ninaricci-ldt-5.jpg?v=637710269758670000',
     })
 
     console.log(await contenedor.getAll())
@@ -116,3 +119,17 @@ async function test2() {
 
 test()
 test2()
+
+
+
+
+async function index() {
+    try {
+        const serv = await conectar(8080)
+        console.log(`Conectando al puerto ${serv.adress().port}`)
+    } catch (error) {
+        console.log('Algo falló: ' + error);
+    }
+}
+
+index()
