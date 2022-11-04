@@ -1,4 +1,4 @@
-const { conectar } = require('./servidor.js');
+/* const { conectar } = require('./servidor.js');
 const {
     randomUUID
 } = require('crypto')
@@ -118,15 +118,14 @@ async function test2() {
 }
 
 test()
-test2()
+test2() */
 
-
-
+const { conectar } = require('./servidor')
 
 async function index() {
     try {
         const serv = await conectar(8080)
-        console.log(`Conectando al puerto ${serv.adress().port}`)
+        console.log(`Conectado al puerto ${serv.address().port}`)
     } catch (error) {
         console.log('Algo falló: ' + error);
     }
